@@ -1,0 +1,13 @@
+git clone https://github.com/wmfsystem/Project_financeiro.git
+
+git remote -v
+
+git remote add upstream https://github.com/wmfsystem/Project_financeiro.git
+
+git remote -v
+
+git touch teste_seunome
+git add .
+git commit -m "seu comentario"
+
+git push -u origin master
