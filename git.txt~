@@ -11,3 +11,10 @@ git add .
 git commit -m "seu comentario"
 
 git push -u origin master
+
+//teste//
+
+aux():=valor1(5);
+valor1():=valor2(10);
+valo2(10):=aux(5);
+
