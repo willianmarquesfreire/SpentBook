@@ -11,19 +11,7 @@ $config = [
             'prefix'   => '',
         ],
 		
-		'mysql' => [
-            'driver'    => 'mysql',
-            'host'      => 'mysql.hostinger.com.br',
-            'database'  => 'u274078877_wme',
-            'username'  => 'u274078877_wme',
-            'password'  => 'wme1234567890',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-        ],
-
-        'mysqll' => [
+        'mysql' => [
             'driver'    => 'mysql',
             'host'      => 'localhost',
             'database'  => 'wmf',
