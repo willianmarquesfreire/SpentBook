@@ -1,9 +1,0 @@
-<?php
-$lang = [
-	"errors" => [
-			
-	],
-	"exceptions" => [
-			
-	]
-];
