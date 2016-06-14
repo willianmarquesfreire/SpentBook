@@ -68,8 +68,8 @@
                     $('#ocultaformulario').css('display','inline-block');
                     $('#mostraformulario').css('display','none');
                 });
-                
-               
+        
+		
 	});
 	
     </script>
@@ -102,37 +102,47 @@
                     <button type="button" class="btn btn-danger" id="sair">
                         Sair
                     </button>
-                    
-                    <button type="button" class="btn btn-success" id="msg">
-                        <?php
-                        if(isset($_GET['msg'])){
-                            if($_GET['msg'] == "cadastro_ok") {
-                                echo "Cadastro realizado com sucesso!";
-                            }
+                    <?php
+                    if(isset($_GET['msg'])) {
+                        if($_GET['msg'] == 'cadastro_ok') {
+                            $msg = "Cadastro Realizado com Sucesso!";
+                            $type = "success";                                  
+                        } else if($_GET['msg'] == 'cadastro_error') {
+                            $msg = "Houveram erros durante o cadastro!";
+                            $type = "danger";                                  
+                        } else if($_GET['msg'] == 'altera_ok') {
+                            $msg = "Alteração realizada com Sucesso!";
+                            $type = "success";                                  
+                        } else if($_GET['msg'] == 'altera_error') {
+                            $msg = "Houveram erros durante a alteração!";
+                            $type = "danger";                                  
+                        } else if($_GET['msg'] == 'deleta_ok') {
+                            $msg = "Exclusão realizada com Sucesso!";
+                            $type = "success";                                  
+                        } else if($_GET['msg'] == 'altera_error') {
+                            $msg = "Houveram erros durante a exclusão!";
+                            $type = "danger";                                  
+                        } else if($_GET['msg'] == 'usuariocadastrado') {
+                            $msg = "Usuário Cadastrado com Sucesso!";
+                            $type = "success";                                  
                         }
-                        echo "
-                        <script>
-                        setTimeout(function(){
-                            $('#msg').css('display', 'none');
-                        },2000);
-                        </script>
-                        ";
-                        ?>
-                    </button>
-                   
+                        echo "<span class='panel panel-$type' id='msg'>$msg</span>
+                                  <script> 
+                                    setTimeout(function(){
+                                        document.getElementById('msg').style.display = 'none';
+                                    },3000);
+                                  </script>";
+                    }
+                        
+                    ?>
 
-                    <span class="label label-info" id="usuario"> 
-                        Bem Vindo 
-                        <?php
-                            echo $_SESSION['usuario'];
-                        ?>
-                    </span>
+                    <span class="label label-info" id="usuario"> Bem Vindo <?php echo $_SESSION["usuario"]; ?></span>
 
                     </div>
                     <div class="panel-body" id="principal">
 
 
-                    </div>
+                </div>
             </div>
         </div>
     </body>

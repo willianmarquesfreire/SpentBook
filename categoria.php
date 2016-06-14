@@ -1,15 +1,22 @@
 <?php 
-    session_start();
-    try {
-        $conn = new PDO("mysql:host=localhost;dbname=u274078877_wme", "root", "root");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $ex) {
-        echo $ex->getMessage();
-    }
-    
-    $categorias = $conn->query("select * from categorias where usuario = '{$_SESSION['usuario']}'");
-    
-    
+	session_start();
+	$server = $_SESSION["localhost"];
+	$user = $_SESSION["server_user"];
+	$pass = $_SESSION["server_pass"];
+	$db = $_SESSION["server_db"];
+	$conn = null;
+	
+	try {
+		$conn = new PDO("mysql:host=$server;dbname=$db", $user, $pass);
+		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+                
+	}
+	
+	$list = $conn->prepare("select * from categorias where usuario = '{$_SESSION['usuario']}'");
+	$list->execute();
+
 
 ?>
 	<div class="container-fluid">
@@ -37,15 +44,21 @@
 	        <th>Excluir</th>
 	    </thead>
 	    <tbody>
-                <?php foreach($categorias->fetchAll() as $k => $v): ?>
-                <tr>
-                    <td><?php echo $v['descricao']; ?></td>
-                    <td><?php echo $v['observacoes']; ?></td>
-                    <td><a href='' class='glyphicon glyphicon-refresh'></a></td>
-                    <td><a href='' class='glyphicon glyphicon-remove'></a></td>
-                </tr>
-                <?php endforeach; ?>
-	    
+	    <?php 
+	    foreach ($list as $index => $reg): 
+	    ?>
+	    <tr>
+	        <td><?php echo $reg["descricao"];?></td>
+	        <td><?php echo $reg["observacoes"];?></td>
+	        <td><a href=
+	        		<?php echo
+	        		"./altera.php?table=categorias".
+	        		str_replace(" ", "_", "&&descricao={$reg['descricao']}").
+	        		str_replace(" ", "_", "&&observacoes={$reg['observacoes']}");
+	        		?> id="altera" name="altera"><span class="glyphicon glyphicon-refresh"></span></p> </a></td>
+	        <td><a href="./deleta.php?table=categorias&&descricao=<?php echo $reg['descricao']; ?>" id="deleta"><span class="glyphicon glyphicon-remove"></span></p> </a></td> 	
+	    </tr>
+	    <?php endforeach; ?>	
 	    </tbody>
 	</table>
 	</div>

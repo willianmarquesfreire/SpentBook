@@ -1,4 +1,24 @@
+<?php 
+	session_start();
+	$server = $_SESSION["localhost"];
+	$user = $_SESSION["server_user"];
+	$pass = $_SESSION["server_pass"];
+	$db = $_SESSION["server_db"];
+	$conn = null;
+	
+	try {
+		$conn = new PDO("mysql:host=$server;dbname=$db", $user, $pass);
+		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch (PDOException $e) {
+		echo $e->getMessage();
+                
+	}
+	
+	$list = $conn->prepare("select * from contas where usuario = '{$_SESSION['usuario']}'");
+	$list->execute();
 
+
+?>
 	<div class="container-fluid">
 	
 	<h1>Conta</h1>
@@ -39,7 +59,35 @@
 	        <th>Excluir</th>
 	    </thead>
 	    <tbody>
-	    
+	    <?php 
+	    foreach ($list as $index => $reg):
+            if ($reg['saldoatual'] < 0) {
+                $opt = 'danger';
+            } if ($reg['saldoatual'] < $reg['saldoinicial']) {
+                $opt = 'warning';
+            } else {
+                $opt = 'success';
+            }
+	    ?>
+	    <tr class="<?=$opt?>">
+	        <td><?php echo $reg["descricao"];?></td>
+	        <td><?php echo $reg["observacoes"];?></td>
+                <td><?php echo $reg["saldoinicial"];?></td>
+                <td><?php echo $reg["saldoatual"];?></td>
+                <td><?php echo $reg["tipo"];?></td>
+	        <td><a href=
+	        		<?php echo
+	        		"./altera.php?table=contas".
+                    str_replace(" ", "_", "&&id={$reg['id']}").
+	        		str_replace(" ", "_", "&&descricao={$reg['descricao']}").
+                    str_replace(" ", "_", "&&saldoinicial={$reg['saldoinicial']}").
+                    str_replace(" ", "_", "&&saldoatual={$reg['saldoatual']}").
+                    str_replace(" ", "_", "&&tipo={$reg['tipo']}").
+	        		str_replace(" ", "_", "&&observacoes={$reg['observacoes']}");
+	        		?> id="altera" name="altera"><span class="glyphicon glyphicon-refresh"></span></p> </a></td>
+	        <td><a href="./deleta.php?table=contas&&id=<?php echo $reg['id']; ?>" id="deleta"><span class="glyphicon glyphicon-remove"></span></p> </a></td> 	
+	    </tr>
+	    <?php endforeach; ?>	
 	    </tbody>
 	</table>
 	</div>

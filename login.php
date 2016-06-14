@@ -1,70 +1,63 @@
 <?php
-
-if(isset($_POST['entrar'])) {
-    if (login()) {
-        session_start();
-        $_SESSION['usuario'] = $_POST['usuario'];
-        $_SESSION['senha'] = $_POST['senha'];
-        header("Location:sistema.php");
-    } else {
-        header("Location:index.php?msg=error_login");
-    }
-} else {
-    if (cadastra()) {
-        session_start();
-        $_SESSION['usuario'] = $_POST['usuario'];
-        $_SESSION['senha'] = $_POST['senha'];
-        header("Location:sistema.php");
-    } else {
-        header("Location:index.php?msg=error_login");
-    }
-}
+	session_start();
+	
+	$_SESSION["localhost"] = "localhost";
+	$_SESSION["server_user"] = "root";
+	$_SESSION["server_pass"] = "";
+	$_SESSION["server_db"] = "u274078877_wme";
+	$logado = "false";
 
 
-
-
-function login(){
-    try {
-        $usuario = $_POST['usuario'];
-        $senha = $_POST['senha'];
-        $conn = new PDO("mysql:host=localhost;dbname=u274078877_wme", "root", "root");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-        if (empty($usuario) || empty($senha)) {
-            return false;
-        } else {
-            $existe = $conn->query("select * from usuarios where login = '$usuario' and senha = '$senha'");
-            
-            if($existe->rowCount() > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }  
-    } catch(PDOException $e) {
-        echo $e->getMessage();
-    } 
-}
-
-
-function cadastra(){
-    try {
-        $usuario = $_POST['usuario'];
-        $senha = $_POST['senha'];
-        $conn = new PDO("mysql:host=localhost;dbname=u274078877_wme", "root", "root");
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        if (empty($usuario) || empty($senha)) {
-           return false;
-        } else {
-            $existe = $conn->exec("insert into usuarios(login,senha) values('$usuario','$senha')");
-            return true;
-        }
-        
-    } catch(PDOException $e) {
-        echo $e->getMessage();
-        return false;
-    } 
-}
+	if(isset($_POST["entrar"])) {
+		$_SESSION["usuario"] = $_POST["usuario"];
+		$_SESSION["senha"]   = $_POST["senha"];
+		
+		try {
+			$conn = new PDO("mysql:host={$_SESSION['localhost']};dbname={$_SESSION['server_db']}", $_SESSION["server_user"], $_SESSION["server_pass"]);
+			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+		}
+		
+		$list = $conn->prepare("select * from usuarios");
+		$list->execute();
+		
+		
+		foreach ($list as $k=>$v) {
+			var_dump($list);
+			if ($v["login"] == $_SESSION["usuario"] && $v["senha"] == $_SESSION["senha"]) {
+				$logado = true;
+				break;
+			} else {
+				$logado = false;
+			}
+		}
+		
+		if ($logado) {
+			header("location:sistema.php");
+		} else {
+			header("location:index.php?msg=error_login");
+			
+		}
+	} else {
+		$_SESSION["usuario"] = $_POST["usuario"];
+		$_SESSION["senha"]   = $_POST["senha"];
+		
+		$sql = "insert into usuarios(login, senha) values('{$_POST["usuario"]}','{$_POST["senha"]}');";
+		
+		try {
+			$conn = new PDO("mysql:host={$_SESSION['localhost']};dbname={$_SESSION['server_db']}", $_SESSION['server_user'], $_SESSION['server_pass']);
+			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        $conn->exec($sql);
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+		}
+		
+		
+		
+		header("location:sistema.php?msg=usuariocadastrado");
+	}
+	
 
 
 ?>
