@@ -3,7 +3,7 @@
 	
 	$_SESSION["localhost"] = "localhost";
 	$_SESSION["server_user"] = "root";
-	$_SESSION["server_pass"] = "";
+	$_SESSION["server_pass"] = "root";
 	$_SESSION["server_db"] = "u274078877_wme";
 	$logado = "false";
 
